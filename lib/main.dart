@@ -875,9 +875,9 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                               ),
                               IconButton(
                                 icon: const Icon(Icons.edit_outlined, color: Colors.orangeAccent, size: 20),
-                                onPressed: () => _modalAgregarEditarCancion(
+                                onPressed: () => _crearCancionModal(
                                   cancionExistente: cancion,
-                                  index: widget.repertorio.canciones.indexOf(cancion),
+                                  index: repertorio.canciones.indexOf(cancion),
                                 ),
                                 tooltip: 'Editar',
                               ),
@@ -885,9 +885,9 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
                                 onPressed: () {
                                   setState(() {
-                                    widget.repertorio.canciones.remove(cancion);
+                                    repertorio.canciones.remove(cancion);
                                   });
-                                  widget.onGuardar();
+                                  onGuardar();
                                 },
                                 tooltip: 'Eliminar',
                               ),
@@ -911,7 +911,7 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purpleAccent,
         foregroundColor: Colors.white,
-        onPressed: () => _modalAgregarEditarCancion(),
+        onPressed: () => _crearCancionModal(),
         child: const Icon(Icons.add),
       ),
     );
