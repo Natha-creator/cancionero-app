@@ -858,13 +858,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
       appBar: AppBar(
         title: Text(widget.repertorio.nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF1E1E2C),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.public, color: Colors.cyanAccent),
-            tooltip: 'Ver Catálogo Público',
-            onPressed: _modalCantosPublicos,
-          ),
-        ],
       ),
       body: Column(
         children: [
