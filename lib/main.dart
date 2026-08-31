@@ -363,7 +363,7 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
         ),
       ),
     );
-    setState({});
+    setState(() {});
   }
 
   @override
@@ -576,7 +576,7 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
               onPressed: () {
                 if (pinCtrl.text.trim() == rep.pinCompartido) {
                   widget.repertoriosDesbloqueados.add(rep.id);
-                  widget.onGuardarCambios(); // Guarda permanentemente el desbloqueo
+                  widget.onGuardarCambios(); 
                   Navigator.pop(context);
                   _abrirDetalleCarpeta(rep);
                 } else {
@@ -612,7 +612,7 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
         ),
       ),
     );
-    setState({});
+    setState(() {});
   }
 
   @override
