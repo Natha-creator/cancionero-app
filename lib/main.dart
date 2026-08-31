@@ -869,26 +869,23 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.copy, color: Colors.cyanAccent, size: 20),
-                                onPressed: () => _duplicarCancion(widget.repertorio.canciones.indexOf(cancion)),
+                                icon: const Icon(Icons.copy, color: Colors.cyanAccent, size: 20)
+                                onPressed: () { // Usamos el índice directo de la canción sin el widget. sobrante
+                    q           final index = repertorio.canciones.indexOf(cancion);
+                                _duplicarCancion(index);
                                 tooltip: 'Duplicar',
                               ),
                               IconButton(
                                 icon: const Icon(Icons.edit_outlined, color: Colors.orangeAccent, size: 20),
-                                onPressed: () => _crearCancionModal(
-                                  cancionExistente: cancion,
-                                  index: repertorio.canciones.indexOf(cancion),
-                                ),
+                                onPressed: () { final index = repertorio.canciones.indexOf(cancion);
+                                _crearCancionModal(cancionExistente: cancion, index: index); },  
                                 tooltip: 'Editar',
                               ),
                               IconButton(
                                 icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
-                                onPressed: () {
-                                  setState(() {
-                                    repertorio.canciones.remove(cancion);
-                                  });
-                                  onGuardar();
-                                },
+                                onPressed: () { repertorio.canciones.remove(cancion);
+                                // Si tienes una función para guardar localmente, llámala aquí de forma limpia:
+                                // _guardarCambios();
                                 tooltip: 'Eliminar',
                               ),
                             ],
