@@ -36,14 +36,11 @@ class Cancion {
   String titulo;
   String artista;
   String letraConAcordes;
-  bool esPublica; // Nueva propiedad para indicar si el canto es público o privado
-
   Cancion({
     required this.id,
     required this.titulo,
     required this.artista,
     required this.letraConAcordes,
-    this.esPublica = false,
   });
 
   Map<String, dynamic> toJson() => {
@@ -51,7 +48,6 @@ class Cancion {
         'titulo': titulo,
         'artista': artista,
         'letraConAcordes': letraConAcordes,
-        'esPublica': esPublica,
       };
 
   factory Cancion.fromJson(Map<String, dynamic> json) => Cancion(
@@ -59,7 +55,6 @@ class Cancion {
         titulo: json['titulo'] ?? '',
         artista: json['artista'] ?? '',
         letraConAcordes: json['letraConAcordes'] ?? '',
-        esPublica: json['esPublica'] ?? false,
       );
 }
 
@@ -69,6 +64,7 @@ class Repertorio {
   bool esPrivada;
   String? pinCompartido;
   bool esUnido;
+  bool estaDesbloqueado = false; // <-- Agrégala aquí
   List<Cancion> canciones;
 
   Repertorio({
