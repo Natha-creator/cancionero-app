@@ -36,6 +36,7 @@ class Cancion {
   String titulo;
   String artista;
   String letraConAcordes;
+
   Cancion({
     required this.id,
     required this.titulo,
@@ -64,7 +65,6 @@ class Repertorio {
   bool esPrivada;
   String? pinCompartido;
   bool esUnido;
-  bool estaDesbloqueado = false; // <-- Agrégala aquí
   List<Cancion> canciones;
 
   Repertorio({
@@ -92,7 +92,9 @@ class Repertorio {
         pinCompartido: json['pinCompartido'],
         esUnido: json['esUnido'] ?? false,
         canciones: json['canciones'] != null
-            ? (json['canciones'] as List).map((i) => Cancion.fromJson(i)).toList()
+            ? (json['canciones'] as List)
+                .map((i) => Cancion.fromJson(i))
+                .toList()
             : [],
       );
 }
@@ -158,7 +160,8 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
         builder: (context, setModalState) {
           return AlertDialog(
             backgroundColor: const Color(0xFF1E1E2C),
-            title: const Text('Crear Mi Repertorio', style: TextStyle(color: Colors.white)),
+            title: const Text('Crear Mi Repertorio',
+                style: TextStyle(color: Colors.white)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -169,13 +172,17 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                     labelText: 'Nombre del Repertorio',
                     labelStyle: TextStyle(color: Colors.white70),
                     border: OutlineInputBorder(),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.white38)),
                   ),
                 ),
                 const SizedBox(height: 12),
                 SwitchListTile(
-                  title: const Text('Proteger con PIN', style: TextStyle(color: Colors.white)),
-                  subtitle: Text(esPrivada ? 'Privado con PIN' : 'Público', style: const TextStyle(color: Colors.white60)),
+                  title: const Text('Proteger con PIN',
+                      style: TextStyle(color: Colors.white)),
+                  subtitle: Text(
+                      esPrivada ? 'Carpeta protegida' : 'Carpeta normal',
+                      style: const TextStyle(color: Colors.white60)),
                   value: esPrivada,
                   activeColor: Colors.purpleAccent,
                   onChanged: (val) => setModalState(() => esPrivada = val),
@@ -191,7 +198,8 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                       labelText: 'PIN de 4 dígitos',
                       labelStyle: TextStyle(color: Colors.white70),
                       border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.white38)),
                     ),
                   ),
               ],
@@ -199,17 +207,21 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+                child:
+                    const Text('Cancelar', style: TextStyle(color: Colors.white60)),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.purpleAccent, foregroundColor: Colors.white),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.purpleAccent,
+                    foregroundColor: Colors.white),
                 onPressed: () {
                   if (nombreCtrl.text.isNotEmpty) {
                     final nuevo = Repertorio(
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       nombre: nombreCtrl.text,
                       esPrivada: esPrivada,
-                      pinCompartido: esPrivada && pinCtrl.text.isNotEmpty ? pinCtrl.text : null,
+                      pinCompartido:
+                          esPrivada && pinCtrl.text.isNotEmpty ? pinCtrl.text : null,
                       esUnido: false,
                     );
                     setState(() {
@@ -238,11 +250,13 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1E1E2C),
-        title: const Text('Unirse con PIN', style: TextStyle(color: Colors.white)),
+        title: const Text('Ingresar con PIN',
+            style: TextStyle(color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Ingresa el nombre y PIN del repertorio:', style: TextStyle(color: Colors.white70)),
+            const Text('Ingresa el nombre y PIN del repertorio:',
+                style: TextStyle(color: Colors.white70)),
             const SizedBox(height: 12),
             TextField(
               controller: nombreCtrl,
@@ -251,7 +265,8 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                 labelText: 'Nombre del Repertorio',
                 labelStyle: TextStyle(color: Colors.white70),
                 border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white38)),
               ),
             ),
             const SizedBox(height: 12),
@@ -261,12 +276,16 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
               maxLength: 4,
               obscureText: true,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+              style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
               decoration: const InputDecoration(
                 hintText: '****',
                 hintStyle: TextStyle(color: Colors.white24),
                 border: OutlineInputBorder(),
-                enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
+                enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white38)),
               ),
             ),
           ],
@@ -274,14 +293,15 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+            child:
+                const Text('Cancelar', style: TextStyle(color: Colors.white60)),
           ),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.cyanAccent, foregroundColor: Colors.black),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.cyanAccent, foregroundColor: Colors.black),
             onPressed: () {
               final pinIngresado = pinCtrl.text.trim();
               final nombreIngresado = nombreCtrl.text.trim();
-
               if (pinIngresado.isNotEmpty && nombreIngresado.isNotEmpty) {
                 Repertorio? repertorioEncontrado;
                 for (var r in repertoriosUnidos) {
@@ -290,7 +310,6 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                     break;
                   }
                 }
-
                 if (repertorioEncontrado != null) {
                   _repertoriosDesbloqueados.add(repertorioEncontrado.id);
                   Navigator.pop(context);
@@ -361,10 +380,14 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                     color: Colors.white.withOpacity(0.1),
                     shape: BoxShape.circle,
                     boxShadow: [
-                      BoxShadow(color: Colors.purpleAccent.withOpacity(0.3), blurRadius: 20, spreadRadius: 5)
+                      BoxShadow(
+                          color: Colors.purpleAccent.withOpacity(0.3),
+                          blurRadius: 20,
+                          spreadRadius: 5)
                     ],
                   ),
-                  child: const Icon(Icons.music_note_rounded, size: 80, color: Colors.cyanAccent),
+                  child: const Icon(Icons.music_note_rounded,
+                      size: 80, color: Colors.cyanAccent),
                 ),
                 const SizedBox(height: 24),
                 const Text(
@@ -379,7 +402,8 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                 const SizedBox(height: 8),
                 const Text(
                   'Gestor Pro de Acordes y Repertorios',
-                  style: TextStyle(color: Colors.white70, fontSize: 15, letterSpacing: 0.5),
+                  style: TextStyle(
+                      color: Colors.white70, fontSize: 15, letterSpacing: 0.5),
                 ),
                 const Spacer(),
                 SizedBox(
@@ -390,11 +414,14 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                       backgroundColor: Colors.white,
                       foregroundColor: const Color(0xFF2A0845),
                       elevation: 6,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: _crearRepertorioModal,
                     icon: const Icon(Icons.add_circle_outline, size: 24),
-                    label: const Text('Crear Mi Repertorio', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                    label: const Text('Crear Mi Repertorio',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold)),
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -405,14 +432,17 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                     style: OutlinedButton.styleFrom(
                       foregroundColor: Colors.white,
                       side: const BorderSide(color: Colors.cyanAccent, width: 2),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: _unirseConPinModal,
-                    icon: const Icon(Icons.lock_open_rounded, size: 24, color: Colors.cyanAccent),
-                    label: const Text('Ingresar con PIN', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                    icon: const Icon(Icons.lock_open_rounded,
+                        size: 24, color: Colors.cyanAccent),
+                    label: const Text('Ingresar con PIN',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold)),
                   ),
                 ),
-                const SizedBox(height: 14),
                 if (misRepertorios.isNotEmpty) ...[
                   const SizedBox(height: 14),
                   SizedBox(
@@ -422,13 +452,15 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFFFB300),
                         foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
                       ),
                       onPressed: () => _irAPantallaRepertorios(esUnidos: false),
                       icon: const Icon(Icons.folder_special, size: 24),
                       label: Text(
                         'Mis Repertorios (${misRepertorios.length})',
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -442,13 +474,15 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF00E676),
                         foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
                       ),
                       onPressed: () => _irAPantallaRepertorios(esUnidos: true),
                       icon: const Icon(Icons.group_work, size: 24),
                       label: Text(
                         'Repertorios Unidos (${repertoriosUnidos.length})',
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -483,23 +517,28 @@ class ListaRepertoriosPantalla extends StatefulWidget {
   });
 
   @override
-  State<ListaRepertoriosPantalla> createState() => _ListaRepertoriosPantallaState();
+  State<ListaRepertoriosPantalla> createState() =>
+      _ListaRepertoriosPantallaState();
 }
 
 class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
   void _verificarPinYAbrir(Repertorio rep) {
+    // Si ya fue desbloqueado en esta sesión, abre directo sin pedir PIN de nuevo
     if (widget.repertoriosDesbloqueados.contains(rep.id)) {
       _abrirDetalleCarpeta(rep);
       return;
     }
 
-    if (rep.esPrivada && rep.pinCompartido != null && rep.pinCompartido!.isNotEmpty) {
+    if (rep.esPrivada &&
+        rep.pinCompartido != null &&
+        rep.pinCompartido!.isNotEmpty) {
       final pinCtrl = TextEditingController();
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           backgroundColor: const Color(0xFF1E1E2C),
-          title: const Text('Acceso Protegido', style: TextStyle(color: Colors.white)),
+          title: const Text('Acceso Protegido',
+              style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: pinCtrl,
             keyboardType: TextInputType.number,
@@ -510,16 +549,20 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
               labelText: 'Ingrese PIN para acceder',
               labelStyle: TextStyle(color: Colors.white70),
               border: OutlineInputBorder(),
-              enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white38)),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+              child:
+                  const Text('Cancelar', style: TextStyle(color: Colors.white60)),
             ),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.purpleAccent, foregroundColor: Colors.white),
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.purpleAccent,
+                  foregroundColor: Colors.white),
               onPressed: () {
                 if (pinCtrl.text.trim() == rep.pinCompartido) {
                   widget.repertoriosDesbloqueados.add(rep.id);
@@ -527,7 +570,9 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
                   _abrirDetalleCarpeta(rep);
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('PIN incorrecto'), backgroundColor: Colors.redAccent),
+                    const SnackBar(
+                        content: Text('PIN incorrecto'),
+                        backgroundColor: Colors.redAccent),
                   );
                 }
               },
@@ -562,13 +607,16 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.tituloPantalla, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(widget.tituloPantalla,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF1E1E2C),
       ),
       body: widget.lista.isEmpty
           ? Center(
               child: Text(
-                widget.esModoUnidos ? 'No hay repertorios unidos.' : 'No has creado repertorios.',
+                widget.esModoUnidos
+                    ? 'No hay repertorios unidos.'
+                    : 'No has creado repertorios.',
                 style: const TextStyle(fontSize: 16, color: Colors.white60),
               ),
             )
@@ -581,26 +629,38 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
                   color: const Color(0xFF1E1E2C),
                   elevation: 4,
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
                   child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     leading: CircleAvatar(
-                      backgroundColor: rep.esPrivada ? Colors.amber.withOpacity(0.2) : Colors.purple.withOpacity(0.2),
+                      backgroundColor: rep.esPrivada
+                          ? Colors.amber.withOpacity(0.2)
+                          : Colors.purple.withOpacity(0.2),
                       child: Icon(
                         rep.esPrivada ? Icons.lock : Icons.folder,
-                        color: rep.esPrivada ? Colors.amberAccent : Colors.purpleAccent,
+                        color: rep.esPrivada
+                            ? Colors.amberAccent
+                            : Colors.purpleAccent,
                       ),
                     ),
                     title: Text(
                       rep.nombre,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18, color: Colors.white),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.white),
                     ),
                     subtitle: Text(
-                      rep.esPrivada ? 'Protegido con PIN • ${rep.canciones.length} canciones' : 'Público • ${rep.canciones.length} canciones',
+                      rep.esPrivada
+                          ? 'Protegido con PIN • ${rep.canciones.length} canciones'
+                          : 'Normal • ${rep.canciones.length} canciones',
                       style: const TextStyle(color: Colors.white60),
                     ),
                     trailing: IconButton(
-                      icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                      icon: const Icon(Icons.delete_outline,
+                          color: Colors.redAccent),
                       onPressed: () {
                         setState(() {
                           widget.repertoriosDesbloqueados.remove(rep.id);
@@ -632,7 +692,8 @@ class DetalleRepertorioPantalla extends StatefulWidget {
   });
 
   @override
-  State<DetalleRepertorioPantalla> createState() => _DetalleRepertorioPantallaState();
+  State<DetalleRepertorioPantalla> createState() =>
+      _DetalleRepertorioPantallaState();
 }
 
 class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
@@ -640,7 +701,8 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
 
   void _modalAgregarEditarCancion({Cancion? cancionExistente, int? index}) {
     final tituloCtrl = TextEditingController(text: cancionExistente?.titulo ?? '');
-    final artistaCtrl = TextEditingController(text: cancionExistente?.artista ?? '');
+    final artistaCtrl =
+        TextEditingController(text: cancionExistente?.artista ?? '');
     final letraCtrl = TextEditingController(
       text: cancionExistente?.letraConAcordes ??
           'C           G\nDios está aquí\nAm          F\nTan cierto como el aire',
@@ -648,144 +710,91 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setModalState) {
-          return AlertDialog(
-            backgroundColor: const Color(0xFF1E1E2C),
-            title: Text(cancionExistente == null ? 'Agregar Canción' : 'Editar Canción', style: const TextStyle(color: Colors.white)),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextField(
-                    controller: tituloCtrl,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
-                      labelText: 'Título',
-                      labelStyle: TextStyle(color: Colors.white70),
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: artistaCtrl,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: const InputDecoration(
-                      labelText: 'Artista / Autor',
-                      labelStyle: TextStyle(color: Colors.white70),
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: letraCtrl,
-                    maxLines: 6,
-                    style: const TextStyle(color: Colors.white, fontFamily: 'monospace'),
-                    decoration: const InputDecoration(
-                      labelText: 'Letra con Acordes arriba',
-                      labelStyle: TextStyle(color: Colors.white70),
-                      border: OutlineInputBorder(),
-                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: Colors.white38)),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancelar', style: TextStyle(color: Colors.white60)),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.purpleAccent, foregroundColor: Colors.white),
-                onPressed: () {
-                  if (tituloCtrl.text.isNotEmpty) {
-                    setState(() {
-                      if (cancionExistente == null) {
-                        widget.repertorio.canciones.add(
-                          Cancion(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
-                            titulo: tituloCtrl.text,
-                            artista: artistaCtrl.text,
-                            letraConAcordes: letraCtrl.text,
-                          ),
-                        );
-                      } else if (index != null) {
-                        widget.repertorio.canciones[index] = Cancion(
-                          id: cancionExistente.id,
-                          titulo: tituloCtrl.text,
-                          artista: artistaCtrl.text,
-                          letraConAcordes: letraCtrl.text,
-                        );
-                      }
-                    });
-                    widget.onGuardar();
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Guardar'),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-    // Tomamos tanto los del catálogo fijo como las canciones marcadas como públicas en este u otros repertorios
-    showDialog(
-      context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1E1E2C),
-        title: const Text('Cantos Públicos Disponibles', style: TextStyle(color: Colors.white)),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: CatalogoPublico.cancionesPublicas.length,
-            itemBuilder: (context, index) {
-              final pub = CatalogoPublico.cancionesPublicas[index];
-              return ListTile(
-                title: Text(pub.titulo, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                subtitle: Text(pub.artista, style: const TextStyle(color: Colors.white60)),
-                trailing: IconButton(
-                  icon: const Icon(Icons.add_circle, color: Colors.cyanAccent),
-                  onPressed: () {
-                    bool yaExiste = widget.repertorio.canciones.any((c) => c.titulo.toLowerCase() == pub.titulo.toLowerCase());
-                    if (!yaExiste) {
-                      setState(() {
-                        widget.repertorio.canciones.add(
-                          Cancion(
-                            id: DateTime.now().millisecondsSinceEpoch.toString(),
-                            titulo: pub.titulo,
-                            artista: pub.artista,
-                            letraConAcordes: pub.letraConAcordes,
-                            esPublica: true,
-                          ),
-                        );
-                      });
-                      widget.onGuardar();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('¡"${pub.titulo}" agregado al repertorio!')),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Esta canción ya está en el repertorio')),
-                      );
-                    }
-                  },
+        title: Text(
+            cancionExistente == null ? 'Agregar Canción' : 'Editar Canción',
+            style: const TextStyle(color: Colors.white)),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: tituloCtrl,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  labelText: 'Título',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white38)),
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: artistaCtrl,
+                style: const TextStyle(color: Colors.white),
+                decoration: const InputDecoration(
+                  labelText: 'Artista / Autor',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white38)),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: letraCtrl,
+                maxLines: 6,
+                style: const TextStyle(
+                    color: Colors.white, fontFamily: 'monospace'),
+                decoration: const InputDecoration(
+                  labelText: 'Letra con Acordes arriba',
+                  labelStyle: TextStyle(color: Colors.white70),
+                  border: OutlineInputBorder(),
+                  enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.white38)),
+                ),
+              ),
+            ],
           ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('Cerrar', style: TextStyle(color: Colors.white60)),
+            child:
+                const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.purpleAccent,
+                foregroundColor: Colors.white),
+            onPressed: () {
+              if (tituloCtrl.text.isNotEmpty) {
+                setState(() {
+                  if (cancionExistente == null) {
+                    widget.repertorio.canciones.add(
+                      Cancion(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        titulo: tituloCtrl.text,
+                        artista: artistaCtrl.text,
+                        letraConAcordes: letraCtrl.text,
+                      ),
+                    );
+                  } else if (index != null) {
+                    widget.repertorio.canciones[index] = Cancion(
+                      id: cancionExistente.id,
+                      titulo: tituloCtrl.text,
+                      artista: artistaCtrl.text,
+                      letraConAcordes: letraCtrl.text,
+                    );
+                  }
+                });
+                widget.onGuardar();
+                Navigator.pop(context);
+              }
+            },
+            child: const Text('Guardar'),
           ),
         ],
       ),
@@ -799,7 +808,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
       titulo: '${original.titulo} (Copia)',
       artista: original.artista,
       letraConAcordes: original.letraConAcordes,
-      esPublica: original.esPublica,
     );
     setState(() {
       widget.repertorio.canciones.add(copia);
@@ -814,12 +822,14 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
   Widget build(BuildContext context) {
     final cancionesFiltradas = widget.repertorio.canciones.where((c) {
       final query = _filtroBusqueda.toLowerCase();
-      return c.titulo.toLowerCase().contains(query) || c.artista.toLowerCase().contains(query);
+      return c.titulo.toLowerCase().contains(query) ||
+          c.artista.toLowerCase().contains(query);
     }).toList();
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.repertorio.nombre, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(widget.repertorio.nombre,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF1E1E2C),
       ),
       body: Column(
@@ -832,20 +842,25 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
               decoration: InputDecoration(
                 hintText: 'Buscar canción o artista...',
                 hintStyle: const TextStyle(color: Colors.white38),
-                prefixIcon: const Icon(Icons.search, color: Colors.purpleAccent),
+                prefixIcon:
+                    const Icon(Icons.search, color: Colors.purpleAccent),
                 filled: true,
                 fillColor: const Color(0xFF1E1E2C),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none),
               ),
             ),
           ),
           Expanded(
             child: cancionesFiltradas.isEmpty
                 ? const Center(
-                    child: Text('No se encontraron canciones.', style: TextStyle(color: Colors.white60)),
+                    child: Text('No se encontraron canciones.',
+                        style: TextStyle(color: Colors.white60)),
                   )
                 : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                     itemCount: cancionesFiltradas.length,
                     itemBuilder: (context, index) {
                       final cancion = cancionesFiltradas[index];
@@ -853,39 +868,56 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                         color: const Color(0xFF1E1E2C),
                         elevation: 3,
                         margin: const EdgeInsets.symmetric(vertical: 6),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
                         child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                          leading: CircleAvatar(
-                            backgroundColor: cancion.esPublica ? Colors.tealAccent : Colors.purpleAccent,
-                            child: Icon(cancion.esPublica ? Icons.public : Icons.music_note, color: Colors.black),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 6),
+                          leading: const CircleAvatar(
+                            backgroundColor: Colors.purpleAccent,
+                            child: Icon(Icons.music_note, color: Colors.black),
                           ),
-                          title: Text(cancion.titulo, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 16)),
+                          title: Text(cancion.titulo,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  fontSize: 16)),
                           subtitle: Text(
-                            '${cancion.artista.isNotEmpty ? cancion.artista : 'Autor desconocido'} • ${cancion.esPublica ? "Público" : "Privado"}',
+                            cancion.artista.isNotEmpty
+                                ? cancion.artista
+                                : 'Autor desconocido',
                             style: const TextStyle(color: Colors.white60),
                           ),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
-                                icon: const Icon(Icons.copy, color: Colors.cyanAccent, size: 20)
-                                onPressed: () { // Usamos el índice directo de la canción sin el widget. sobrante
-                    q           final index = repertorio.canciones.indexOf(cancion);
-                                _duplicarCancion(index);
+                                icon: const Icon(Icons.copy,
+                                    color: Colors.cyanAccent, size: 20),
+                                onPressed: () => _duplicarCancion(widget
+                                    .repertorio.canciones
+                                    .indexOf(cancion)),
                                 tooltip: 'Duplicar',
                               ),
                               IconButton(
-                                icon: const Icon(Icons.edit_outlined, color: Colors.orangeAccent, size: 20),
-                                onPressed: () { final index = repertorio.canciones.indexOf(cancion);
-                                _crearCancionModal(cancionExistente: cancion, index: index); },  
+                                icon: const Icon(Icons.edit_outlined,
+                                    color: Colors.orangeAccent, size: 20),
+                                onPressed: () => _modalAgregarEditarCancion(
+                                  cancionExistente: cancion,
+                                  index: widget.repertorio.canciones
+                                      .indexOf(cancion),
+                                ),
                                 tooltip: 'Editar',
                               ),
                               IconButton(
-                                icon: const Icon(Icons.delete_outline, color: Colors.redAccent, size: 20),
-                                onPressed: () { repertorio.canciones.remove(cancion);
-                                // Si tienes una función para guardar localmente, llámala aquí de forma limpia:
-                                // _guardarCambios();
+                                icon: const Icon(Icons.delete_outline,
+                                    color: Colors.redAccent, size: 20),
+                                onPressed: () {
+                                  setState(() {
+                                    widget.repertorio.canciones.remove(cancion);
+                                  });
+                                  widget.onGuardar();
+                                },
                                 tooltip: 'Eliminar',
                               ),
                             ],
@@ -894,7 +926,8 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => VisorCancionPantalla(cancion: cancion),
+                                builder: (context) =>
+                                    VisorCancionPantalla(cancion: cancion),
                               ),
                             );
                           },
@@ -908,7 +941,7 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.purpleAccent,
         foregroundColor: Colors.white,
-        onPressed: () => _crearCancionModal(),
+        onPressed: () => _modalAgregarEditarCancion(),
         child: const Icon(Icons.add),
       ),
     );
@@ -920,7 +953,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
 // -------------------------------------------------------------
 class VisorCancionPantalla extends StatefulWidget {
   final Cancion cancion;
-
   const VisorCancionPantalla({super.key, required this.cancion});
 
   @override
@@ -934,16 +966,26 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
   double _velocidadScroll = 1.0;
   Timer? _timerScroll;
   final ScrollController _scrollController = ScrollController();
-
-  final List<String> _notasNivel = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  final List<String> _notasNivel = [
+    'C',
+    'C#',
+    'D',
+    'D#',
+    'E',
+    'F',
+    'F#',
+    'G',
+    'G#',
+    'A',
+    'A#',
+    'B'
+  ];
 
   void _iniciarDetenerAutoScroll() {
     setState(() {
       _autoScrollActivo = !_autoScrollActivo;
     });
-
     _timerScroll?.cancel();
-
     if (_autoScrollActivo) {
       _reprogramarTimerScroll();
     }
@@ -981,8 +1023,8 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
 
   String _transponerAcordes(String texto, int pasos) {
     if (pasos == 0) return texto;
-
-    final RegExp regex = RegExp(r'\b[A-G](?:#|b)?(?:m|maj|min|dim|aug|7|9|11|sus[24])*\b');
+    final RegExp regex =
+        RegExp(r'\b[A-G](?:#|b)?(?:m|maj|min|dim|aug|7|9|11|sus[24])*\b');
     return texto.replaceAllMapped(regex, (match) {
       String acorde = match.group(0)!;
       return _transponerUnAcorde(acorde, pasos);
@@ -992,7 +1034,6 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
   String _transponerUnAcorde(String acorde, int pasos) {
     String raiz = acorde;
     String sufijo = '';
-
     if (acorde.length > 1 && (acorde[1] == '#' || acorde[1] == 'b')) {
       raiz = acorde.substring(0, 2);
       sufijo = acorde.substring(2);
@@ -1000,19 +1041,15 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
       raiz = acorde.substring(0, 1);
       sufijo = acorde.substring(1);
     }
-
     if (raiz == 'Db') raiz = 'C#';
     if (raiz == 'Eb') raiz = 'D#';
     if (raiz == 'Gb') raiz = 'F#';
     if (raiz == 'Ab') raiz = 'G#';
     if (raiz == 'Bb') raiz = 'A#';
-
     int index = _notasNivel.indexOf(raiz);
     if (index == -1) return acorde;
-
     int nuevoIndex = (index + pasos) % 12;
     if (nuevoIndex < 0) nuevoIndex += 12;
-
     return _notasNivel[nuevoIndex] + sufijo;
   }
 
@@ -1025,11 +1062,12 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
 
   @override
   Widget build(BuildContext context) {
-    String letraTranspuesta = _transponerAcordes(widget.cancion.letraConAcordes, _semitonos);
-
+    String letraTranspuesta =
+        _transponerAcordes(widget.cancion.letraConAcordes, _semitonos);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.cancion.titulo, style: const TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(widget.cancion.titulo,
+            style: const TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF1E1E2C),
         actions: [
           DropdownButton<double>(
@@ -1038,10 +1076,18 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
             underline: const SizedBox(),
             icon: const Icon(Icons.speed, color: Colors.purpleAccent),
             items: const [
-              DropdownMenuItem(value: 0.5, child: Text('0.5x', style: TextStyle(color: Colors.white))),
-              DropdownMenuItem(value: 1.0, child: Text('1.0x', style: TextStyle(color: Colors.white))),
-              DropdownMenuItem(value: 1.5, child: Text('1.5x', style: TextStyle(color: Colors.white))),
-              DropdownMenuItem(value: 2.0, child: Text('2.0x', style: TextStyle(color: Colors.white))),
+              DropdownMenuItem(
+                  value: 0.5,
+                  child: Text('0.5x', style: TextStyle(color: Colors.white))),
+              DropdownMenuItem(
+                  value: 1.0,
+                  child: Text('1.0x', style: TextStyle(color: Colors.white))),
+              DropdownMenuItem(
+                  value: 1.5,
+                  child: Text('1.5x', style: TextStyle(color: Colors.white))),
+              DropdownMenuItem(
+                  value: 2.0,
+                  child: Text('2.0x', style: TextStyle(color: Colors.white))),
             ],
             onChanged: (val) {
               if (val != null) _cambiarVelocidad(val);
@@ -1049,7 +1095,9 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
           ),
           const SizedBox(width: 8),
           IconButton(
-            icon: Icon(_autoScrollActivo ? Icons.pause_circle_filled : Icons.play_circle_fill),
+            icon: Icon(_autoScrollActivo
+                ? Icons.pause_circle_filled
+                : Icons.play_circle_fill),
             color: _autoScrollActivo ? Colors.greenAccent : Colors.purpleAccent,
             iconSize: 32,
             onPressed: _iniciarDetenerAutoScroll,
@@ -1068,32 +1116,43 @@ class _VisorCancionPantallaState extends State<VisorCancionPantalla> {
               children: [
                 Row(
                   children: [
-                    const Text('Tono: ', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
+                    const Text('Tono: ',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white70)),
                     IconButton(
-                      icon: const Icon(Icons.remove_circle_outline, color: Colors.purpleAccent),
+                      icon: const Icon(Icons.remove_circle_outline,
+                          color: Colors.purpleAccent),
                       onPressed: () => setState(() => _semitonos--),
                     ),
                     Text(
                       '${_semitonos > 0 ? "+$_semitonos" : _semitonos}',
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.white),
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.white),
                     ),
                     IconButton(
-                      icon: const Icon(Icons.add_circle_outline, color: Colors.purpleAccent),
+                      icon: const Icon(Icons.add_circle_outline,
+                          color: Colors.purpleAccent),
                       onPressed: () => setState(() => _semitonos++),
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                    const Icon(Icons.text_fields, size: 20, color: Colors.white70),
+                    const Icon(Icons.text_fields,
+                        size: 20, color: Colors.white70),
                     IconButton(
-                      icon: const Icon(Icons.text_decrease, color: Colors.purpleAccent),
+                      icon: const Icon(Icons.text_decrease,
+                          color: Colors.purpleAccent),
                       onPressed: () {
                         if (_fontSize > 12) setState(() => _fontSize -= 2);
                       },
                     ),
                     IconButton(
-                      icon: const Icon(Icons.text_increase, color: Colors.purpleAccent),
+                      icon: const Icon(Icons.text_increase,
+                          color: Colors.purpleAccent),
                       onPressed: () {
                         if (_fontSize < 36) setState(() => _fontSize += 2);
                       },
