@@ -124,6 +124,7 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
     final prefs = await SharedPreferences.getInstance();
     final String? datosMis = prefs.getString('mis_repertorios_creados');
     final String? datosUnidos = prefs.getString('repertorios_unidos');
+    final List<String>? desbloqueadosList = prefs.getStringList('repertorios_desbloqueados_ids');
 
     setState(() {
       if (datosMis != null) {
@@ -133,6 +134,9 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
       if (datosUnidos != null) {
         final List<dynamic> lista = jsonDecode(datosUnidos);
         repertoriosUnidos = lista.map((i) => Repertorio.fromJson(i)).toList();
+      }
+      if (desbloqueadosList != null) {
+        _repertoriosDesbloqueados.addAll(desbloqueadosList);
       }
     });
   }
@@ -146,6 +150,10 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
     await prefs.setString(
       'repertorios_unidos',
       jsonEncode(repertoriosUnidos.map((r) => r.toJson()).toList()),
+    );
+    await prefs.setStringList(
+      'repertorios_desbloqueados_ids',
+      _repertoriosDesbloqueados.toList(),
     );
   }
 
@@ -178,10 +186,10 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                 ),
                 const SizedBox(height: 12),
                 SwitchListTile(
-                  title: const Text('Proteger con PIN',
+                  title: const Text('Proteger o Compartir con PIN',
                       style: TextStyle(color: Colors.white)),
                   subtitle: Text(
-                      esPrivada ? 'Carpeta protegida' : 'Carpeta normal',
+                      esPrivada ? 'Protegido / Compartible' : 'Normal',
                       style: const TextStyle(color: Colors.white60)),
                   value: esPrivada,
                   activeColor: Colors.purpleAccent,
@@ -195,7 +203,7 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                     obscureText: true,
                     style: const TextStyle(color: Colors.white),
                     decoration: const InputDecoration(
-                      labelText: 'PIN de 4 dígitos',
+                      labelText: 'PIN de 4 dígitos (Código)',
                       labelStyle: TextStyle(color: Colors.white70),
                       border: OutlineInputBorder(),
                       enabledBorder: OutlineInputBorder(
@@ -207,8 +215,8 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child:
-                    const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+                child: const Text('Cancelar',
+                    style: TextStyle(color: Colors.white60)),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -220,8 +228,9 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                       id: DateTime.now().millisecondsSinceEpoch.toString(),
                       nombre: nombreCtrl.text,
                       esPrivada: esPrivada,
-                      pinCompartido:
-                          esPrivada && pinCtrl.text.isNotEmpty ? pinCtrl.text : null,
+                      pinCompartido: esPrivada && pinCtrl.text.isNotEmpty
+                          ? pinCtrl.text
+                          : null,
                       esUnido: false,
                     );
                     setState(() {
@@ -250,12 +259,12 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFF1E1E2C),
-        title: const Text('Ingresar con PIN',
+        title: const Text('Unirse con Código (PIN)',
             style: TextStyle(color: Colors.white)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('Ingresa el nombre y PIN del repertorio:',
+            const Text('Ingresa el nombre y el código PIN de la carpeta:',
                 style: TextStyle(color: Colors.white70)),
             const SizedBox(height: 12),
             TextField(
@@ -293,12 +302,13 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child:
-                const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+            child: const Text('Cancelar',
+                style: TextStyle(color: Colors.white60)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.cyanAccent, foregroundColor: Colors.black),
+                backgroundColor: Colors.cyanAccent,
+                foregroundColor: Colors.black),
             onPressed: () {
               final pinIngresado = pinCtrl.text.trim();
               final nombreIngresado = nombreCtrl.text.trim();
@@ -312,6 +322,7 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                 }
                 if (repertorioEncontrado != null) {
                   _repertoriosDesbloqueados.add(repertorioEncontrado.id);
+                  _guardarDatos();
                   Navigator.pop(context);
                   _irAPantallaRepertorios(esUnidos: true);
                 } else {
@@ -352,7 +363,7 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
         ),
       ),
     );
-    setState(() {});
+    setState({});
   }
 
   @override
@@ -436,9 +447,9 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                           borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: _unirseConPinModal,
-                    icon: const Icon(Icons.lock_open_rounded,
+                    icon: const Icon(Icons.group_add_rounded,
                         size: 24, color: Colors.cyanAccent),
-                    label: const Text('Ingresar con PIN',
+                    label: const Text('Unirse con Código (PIN)',
                         style: TextStyle(
                             fontSize: 17, fontWeight: FontWeight.bold)),
                   ),
@@ -523,7 +534,6 @@ class ListaRepertoriosPantalla extends StatefulWidget {
 
 class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
   void _verificarPinYAbrir(Repertorio rep) {
-    // Si ya fue desbloqueado en esta sesión, abre directo sin pedir PIN de nuevo
     if (widget.repertoriosDesbloqueados.contains(rep.id)) {
       _abrirDetalleCarpeta(rep);
       return;
@@ -537,7 +547,7 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
         context: context,
         builder: (context) => AlertDialog(
           backgroundColor: const Color(0xFF1E1E2C),
-          title: const Text('Acceso Protegido',
+          title: const Text('Acceso con Código PIN',
               style: TextStyle(color: Colors.white)),
           content: TextField(
             controller: pinCtrl,
@@ -546,7 +556,7 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
             maxLength: 4,
             style: const TextStyle(color: Colors.white),
             decoration: const InputDecoration(
-              labelText: 'Ingrese PIN para acceder',
+              labelText: 'Ingrese el PIN de la carpeta',
               labelStyle: TextStyle(color: Colors.white70),
               border: OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
@@ -556,8 +566,8 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child:
-                  const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+              child: const Text('Cancelar',
+                  style: TextStyle(color: Colors.white60)),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
@@ -566,6 +576,7 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
               onPressed: () {
                 if (pinCtrl.text.trim() == rep.pinCompartido) {
                   widget.repertoriosDesbloqueados.add(rep.id);
+                  widget.onGuardarCambios(); // Guarda permanentemente el desbloqueo
                   Navigator.pop(context);
                   _abrirDetalleCarpeta(rep);
                 } else {
@@ -583,6 +594,7 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
       );
     } else {
       widget.repertoriosDesbloqueados.add(rep.id);
+      widget.onGuardarCambios();
       _abrirDetalleCarpeta(rep);
     }
   }
@@ -600,7 +612,7 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
         ),
       ),
     );
-    setState(() {});
+    setState({});
   }
 
   @override
@@ -636,12 +648,12 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
                         const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     leading: CircleAvatar(
                       backgroundColor: rep.esPrivada
-                          ? Colors.amber.withOpacity(0.2)
+                          ? Colors.cyanAccent.withOpacity(0.2)
                           : Colors.purple.withOpacity(0.2),
                       child: Icon(
-                        rep.esPrivada ? Icons.lock : Icons.folder,
+                        rep.esPrivada ? Icons.vpn_key : Icons.folder,
                         color: rep.esPrivada
-                            ? Colors.amberAccent
+                            ? Colors.cyanAccent
                             : Colors.purpleAccent,
                       ),
                     ),
@@ -653,9 +665,9 @@ class _ListaRepertoriosPantallaState extends State<ListaRepertoriosPantalla> {
                           color: Colors.white),
                     ),
                     subtitle: Text(
-                      rep.esPrivada
-                          ? 'Protegido con PIN • ${rep.canciones.length} canciones'
-                          : 'Normal • ${rep.canciones.length} canciones',
+                      rep.esPrivada && rep.pinCompartido != null
+                          ? 'Código PIN: ${rep.pinCompartido} • ${rep.canciones.length} canciones'
+                          : 'Carpeta normal • ${rep.canciones.length} canciones',
                       style: const TextStyle(color: Colors.white60),
                     ),
                     trailing: IconButton(
@@ -700,7 +712,8 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
   String _filtroBusqueda = '';
 
   void _modalAgregarEditarCancion({Cancion? cancionExistente, int? index}) {
-    final tituloCtrl = TextEditingController(text: cancionExistente?.titulo ?? '');
+    final tituloCtrl =
+        TextEditingController(text: cancionExistente?.titulo ?? '');
     final artistaCtrl =
         TextEditingController(text: cancionExistente?.artista ?? '');
     final letraCtrl = TextEditingController(
@@ -762,8 +775,8 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child:
-                const Text('Cancelar', style: TextStyle(color: Colors.white60)),
+            child: const Text('Cancelar',
+                style: TextStyle(color: Colors.white60)),
           ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
