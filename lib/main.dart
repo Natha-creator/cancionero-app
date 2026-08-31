@@ -362,46 +362,6 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
     setState(() {});
   }
 
-  void _abrirCantosPublicosGlobales() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E2C),
-        title: const Text('Cantos Públicos Generales', style: TextStyle(color: Colors.white)),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.builder(
-            shrinkWrap: true,
-            itemCount: CatalogoPublico.cancionesPublicas.length,
-            itemBuilder: (context, index) {
-              final pub = CatalogoPublico.cancionesPublicas[index];
-              return ListTile(
-                title: Text(pub.titulo, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                subtitle: Text(pub.artista, style: const TextStyle(color: Colors.white60)),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.cyanAccent),
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => VisorCancionPantalla(cancion: pub),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cerrar', style: TextStyle(color: Colors.white60)),
-          ),
-        ],
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -479,21 +439,6 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                // BOTÓN DE PÚBLICO AFUERA EN LA PORTADA
-                SizedBox(
-                  width: double.infinity,
-                  height: 54,
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.tealAccent,
-                      foregroundColor: Colors.black,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                    ),
-                    onPressed: _abrirCantosPublicosGlobales,
-                    icon: const Icon(Icons.public, size: 24),
-                    label: const Text('Ver Cantos Públicos', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-                  ),
-                ),
                 if (misRepertorios.isNotEmpty) ...[
                   const SizedBox(height: 14),
                   SizedBox(
