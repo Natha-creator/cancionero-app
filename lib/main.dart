@@ -102,28 +102,6 @@ class Repertorio {
 }
 
 // -------------------------------------------------------------
-// CATÁLOGO DE CANTOS PÚBLICOS PREDEFINIDOS
-// -------------------------------------------------------------
-class CatalogoPublico {
-  static final List<Cancion> cancionesPublicas = [
-    Cancion(
-      id: 'pub_1',
-      titulo: 'Dios Está Aquí',
-      artista: 'Tradicional / Misa',
-      letraConAcordes: 'C           G\nDios está aquí,\nAm          F\nTan cierto como el aire que respiro,\nG           F             C\nTan cierto como la mañana se levanta el sol,\nG           F             C\nTan cierto como que le hablo y me puede oír.',
-      esPublica: true,
-    ),
-    Cancion(
-      id: 'pub_2',
-      titulo: 'Cerca de Ti, Señor',
-      artista: 'Himnario',
-      letraConAcordes: 'A           D           A\nCerca de Ti, Señor, quiero morar;\nE7                      A\nTu grande y tierno amor quiero gozar.\nD          A          F#m\nLlena mi pobre ser,\nD          E7         A\nlimpia mi corazón;\nF#m         D           A       E7    A\nCerca de Ti, Señor, quiero morar.',
-      esPublica: true,
-    ),
-  ];
-}
-
-// -------------------------------------------------------------
 // PANTALLA 1: PORTADA PRINCIPAL
 // -------------------------------------------------------------
 class PortadaPantalla extends StatefulWidget {
@@ -671,7 +649,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
       text: cancionExistente?.letraConAcordes ??
           'C           G\nDios está aquí\nAm          F\nTan cierto como el aire',
     );
-    bool esPublicoLocal = cancionExistente?.esPublica ?? false;
 
     showDialog(
       context: context,
@@ -718,12 +695,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  SwitchListTile(
-                    title: const Text('¿Hacer público este canto?', style: TextStyle(color: Colors.white, fontSize: 14)),
-                    subtitle: Text(esPublicoLocal ? 'Visible en catálogo general' : 'Privado de este repertorio', style: const TextStyle(color: Colors.white60, fontSize: 12)),
-                    value: esPublicoLocal,
-                    activeColor: Colors.tealAccent,
-                    onChanged: (val) => setModalState(() => esPublicoLocal = val),
                   ),
                 ],
               ),
@@ -745,7 +716,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                             titulo: tituloCtrl.text,
                             artista: artistaCtrl.text,
                             letraConAcordes: letraCtrl.text,
-                            esPublica: esPublicoLocal,
                           ),
                         );
                       } else if (index != null) {
@@ -754,7 +724,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
                           titulo: tituloCtrl.text,
                           artista: artistaCtrl.text,
                           letraConAcordes: letraCtrl.text,
-                          esPublica: esPublicoLocal,
                         );
                       }
                     });
@@ -770,8 +739,6 @@ class _DetalleRepertorioPantallaState extends State<DetalleRepertorioPantalla> {
       ),
     );
   }
-
-  void _modalCantosPublicos() {
     // Tomamos tanto los del catálogo fijo como las canciones marcadas como públicas en este u otros repertorios
     showDialog(
       context: context,
