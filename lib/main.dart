@@ -2,8 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  
   runApp(const CancioneroApp());
 }
 
@@ -122,39 +127,53 @@ class _PortadaPantallaState extends State<PortadaPantalla> {
 
   Future<void> _cargarDatos() async {
     final prefs = await SharedPreferences.getInstance();
-    final String? datosMis = prefs.getString('mis_repertorios_creados');
-    final String? datosUnidos = prefs.getString('repertorios_unidos');
     final List<String>? desbloqueadosList = prefs.getStringList('repertorios_desbloqueados_ids');
 
     setState(() {
-      if (datosMis != null) {
-        final List<dynamic> lista = jsonDecode(datosMis);
-        misRepertorios = lista.map((i) => Repertorio.fromJson(i)).toList();
-      }
-      if (datosUnidos != null) {
-        final List<dynamic> lista = jsonDecode(datosUnidos);
-        repertoriosUnidos = lista.map((i) => Repertorio.fromJson(i)).toList();
-      }
       if (desbloqueadosList != null) {
         _repertoriosDesbloqueados.addAll(desbloqueadosList);
       }
+    });
+     // Escucha en tiempo real los cambios en Firestore
+    FirebaseFirestore.instance.collection('repertorios').snapshots().listen((snapshot) {
+      List<Repertorio> tempMis = [];
+      List<Repertorio> tempUnidos = [];
+
+      for (var doc in snapshot.docs) {
+        final data = doc.data();
+        data['id'] = doc.id; 
+        final rep = Repertorio.fromJson(data);
+
+        if (rep.esUnido) {
+          tempUnidos.add(rep);
+        } else {
+          tempMis.add(rep);
+        }
+      }
+
+      setState(() {
+        misRepertorios = tempMis;
+        repertoriosUnidos = tempUnidos;
+      });
     });
   }
 
   Future<void> _guardarDatos() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(
-      'mis_repertorios_creados',
-      jsonEncode(misRepertorios.map((r) => r.toJson()).toList()),
-    );
-    await prefs.setString(
-      'repertorios_unidos',
-      jsonEncode(repertoriosUnidos.map((r) => r.toJson()).toList()),
-    );
     await prefs.setStringList(
       'repertorios_desbloqueados_ids',
       _repertoriosDesbloqueados.toList(),
     );
+
+    // Sube/Actualiza los repertorios en la nube de Firestore
+    final batch = FirebaseFirestore.instance.batch();
+    
+    for (var r in [...misRepertorios, ...repertoriosUnidos]) {
+      final ref = FirebaseFirestore.instance.collection('repertorios').doc(r.id);
+      batch.set(ref, r.toJson());
+    }
+    
+    await batch.commit();
   }
 
   void _crearRepertorioModal() {
